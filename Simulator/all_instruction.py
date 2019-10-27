@@ -1,37 +1,39 @@
-def fool(*arg):
-    print(arg)
+from r_type import add, nand
+from i_type import lw, sw, beq
+from j_type import jalr
+from o_type import halt, noop
 
 instructions = {
     "000":{
         "name": "add",
-        "function": fool
+        "function": add
     },
     "001":{
         "name": "nand",
-        "function": fool
+        "function": nand
     },
     "010":{
         "name": "lw",
-        "function": fool
+        "function": lw
     },
     "011":{
         "name": "sw",
-        "function": fool
+        "function": sw
     },
     "100":{
         "name": "beq",
-        "function": fool
+        "function": beq
     },
     "101":{
         "name": "jalr",
-        "function": fool
+        "function": jalr
     },
     "110":{
         "name": "halt",
-        "function": fool
+        "function": halt
     },
     "111":{
         "name": "noop",
-        "function": fool
+        "function": noop
     },
 }
