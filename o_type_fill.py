@@ -1,19 +1,15 @@
-from my_utils import binary_str_to_decimal
+from my_utils import binary_str_to_decimal, check_offset_field, to_binary_str
 
 #O-type
-def noop(noop):
-    instruction = '111' + '0000000000000000000000'
-    return binary_str_to_decimal(instruction)
-print(noop(noop))
+def noop():
+    return binary_str_to_decimal(f"111{to_binary_str(0,22)}")
+print(noop())
 
-def halt(halt):
-    instruction = '110' + '0000000000000000000000'
-    return binary_str_to_decimal(instruction)
-print(halt(halt))
+def halt():
+    return binary_str_to_decimal(f"110{to_binary_str(0,22)}")
+print(halt())
 
 #.fill
-# def fill(input):
-
-
-# getinput = input()
-# fill(getinput)
+def fill(input):
+    if check_offset_field(input):
+        return input
