@@ -56,7 +56,12 @@ def handle_instructions(line_count, line):
 # format label<white>instruction<white>field0<white>field1<white>field2<white>comments
 if __name__ == "__main__":
     file_location = input("Input assembly file location: ")
+    file_output = input("File output: ")
 
+    if file_output == "":
+        file_output = "result.o"
+
+    output = []
     with open(file_location, "r") as file_reader:
 
         # find all label
@@ -68,21 +73,22 @@ if __name__ == "__main__":
                 print(f"Error at line {line_count+1}: {e}")
                 exit(1)
 
-        print(label)
         # go back to beginning of the file
         file_reader.seek(0)
-
-        output = []
 
         # read each line and handle instruction
         for line_count, line in enumerate(file_reader):
             try:
                 result = handle_instructions(line_count, line)
-                print(instructions[result[0]]["function"](*result[1]))
-                # output.append(result)
+                machine_code = instructions[result[0]]["function"](*result[1])
+                print(machine_code)
+                output.append(machine_code)
             except Exception as e:
                 print(f"Error at line {line_count+1}: {e}")
                 exit(1)
 
-        # for result in output:
-        #     print(result)
+    # write reesult to a file
+    with open(f"{file_output}", "w") as file_writer:
+        for machine_code in output:
+            file_writer.write(str(machine_code)+"\n")
+
