@@ -24,7 +24,6 @@ def extract_binary(num ,start, end):
     return (num & i) >> start
 
 
-
 def check_offset_field(num):
     if num < -32768 or num > 32767:
         raise Exception(f"error {num} offset overflow")
