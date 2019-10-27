@@ -4,12 +4,6 @@ from i_type import lw, beq, sw
 from r_type import add, nand
 
 
-def fool(temp=0, temp1=1, temp2=2):
-    print(temp)
-    print(temp1)
-    print(temp2)
-
-
 instructions = {
     "add": {"input": 3, "function": add},
     "nand": {"input": 3, "function": nand},
