@@ -1,5 +1,4 @@
 from all_instruction import instructions
-from j_type import jalr
 
 
 def extracted_label(file_reader):
@@ -21,7 +20,7 @@ def handle_instructions(line_count, line):
     instruction = split_line.pop(0).lower()
     if instruction in instructions.keys():
         fields = []
-        for _ in range(instructions[instruction]):
+        for _ in range(instructions[instruction]["input"]):
             field = split_line.pop(0)
             # handle if field is label
             if label.get(field):
@@ -69,10 +68,11 @@ if __name__ == "__main__":
         for line_count, line in enumerate(file_reader):
             try:
                 result = handle_instructions(line_count, line)
-                output.append(result)
+                print(instructions[result[0]]["function"](*result[1]))
+                # output.append(result)
             except Exception as e:
                 print(f"Error at line {line_count+1}: {e}")
                 exit(1)
 
-        for result in output:
-            print(result)
+        # for result in output:
+        #     print(result)
