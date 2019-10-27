@@ -55,8 +55,10 @@ field2 = int(data[4]) #offsetField
 comments = str(data[5])
 
 
-if check_isregister(field0) or check_isregister(field1):
-elif check_offset_field(field2):
+if not check_isregister(field0) or not check_isregister(field1):
+    pass
+elif not check_offset_field(field2):
+    pass
 else:
     code="0000000"
 
@@ -67,18 +69,18 @@ else:
     elif instruction=="beq":   
         code+="100"
 
-    binaryField0 = to_binary_str(binaryField0, 3)
-    binaryField1 = to_binary_str(binaryField1, 3)
+    binaryField0 = to_binary_str(field0, 3)
+    binaryField1 = to_binary_str(field1, 3)
 
     code+=binaryField0
     code+=binaryField1
 
     if field2>=0:
-        binaryField0 = to_binary_str(binaryField2, 16)
+        binaryField2 = to_binary_str(field2, 16)
         code+=binaryField2
     else:
         field2*=-1
-        binaryField0 = to_binary_str(binaryField2, 16)
+        binaryField2 = to_binary_str(field2, 16)
         code+=twoCom(binaryField2)
 
     print("machine code is: ",code)
