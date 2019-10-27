@@ -1,13 +1,18 @@
 from all_instruction import instructions
 
-def extracted_label(file_reader):
-    label = {}
-    # TODO: check same label and throw error
-    for line_count, line in enumerate(file_reader):
-        if not line.startswith(" "):
-            current_label = line.split(maxsplit=1)[0]
-            label[current_label] = line_count
-    return label
+
+def extracted_label(label, line, line_count):
+    if not line.startswith(" "):
+        current_label = line.split(maxsplit=1)[0]
+
+        # check error
+        if current_label[0].isdigit():
+            raise Exception(f"Label {current_label} can't start with number")
+        elif label.get(current_label):
+            raise Exception(f"Duplicate label {current_label}")
+
+            # no error add to label
+        label[current_label] = line_count
 
 
 def handle_instructions(line_count, line):
@@ -19,7 +24,7 @@ def handle_instructions(line_count, line):
     instruction = split_line.pop(0).lower()
     if instruction in instructions.keys():
         fields = []
-        for _ in range(instructions[instruction]):
+        for _ in range(instructions[instruction]["input"]):
             field = split_line.pop(0)
             # handle if field is label
             if label.get(field):
@@ -54,8 +59,14 @@ if __name__ == "__main__":
 
     with open(file_location, "r") as file_reader:
 
-        # find all lable
-        label = extracted_label(file_reader)
+        # find all label
+        label = {}
+        for line_count, line in enumerate(file_reader):
+            try:
+                extracted_label(label, line, line_count)
+            except Exception as e:
+                print(f"Error at line {line_count+1}: {e}")
+                exit(1)
 
         print(label)
         # go back to beginning of the file
@@ -67,10 +78,11 @@ if __name__ == "__main__":
         for line_count, line in enumerate(file_reader):
             try:
                 result = handle_instructions(line_count, line)
-                output.append(result)
+                print(instructions[result[0]]["function"](*result[1]))
+                # output.append(result)
             except Exception as e:
                 print(f"Error at line {line_count+1}: {e}")
                 exit(1)
 
-        for result in output:
-            print(result)
+        # for result in output:
+        #     print(result)
