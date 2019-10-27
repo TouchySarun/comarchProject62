@@ -1,6 +1,5 @@
 from all_instruction import instructions
 
-
 def extracted_label(file_reader):
     label = {}
     # TODO: check same label and throw error
