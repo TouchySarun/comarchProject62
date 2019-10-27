@@ -1,6 +1,5 @@
-from my_utils import extract_binary
+from my_utils import binary_str_to_decimal, extract_binary
 
-# R-Type
 def nand(code, global):
     destReg = extract_binary(code, 0, 2)
     regA = extract_binary(code, 19, 21)
@@ -8,3 +7,12 @@ def nand(code, global):
     
     global['mem'][destReg] = ~(global['mem'][regA] & global['mem'][regB])  
     global['pc'] += 1
+
+def add (code,g):
+    regA = extract_binary(code,19,21)
+    regB = extract_binary(code,16,18)
+    destReg = extract_binary(code,0,2)
+
+    g["reg"][destReg] = g["reg"][regA] + g["reg"][regB]
+    g["pc"] += 1
+
