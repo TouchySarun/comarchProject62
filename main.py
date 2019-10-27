@@ -1,4 +1,5 @@
 from all_instruction import instructions
+from j_type import jalr
 
 
 def extracted_label(file_reader):

@@ -17,3 +17,12 @@ def binary_str_to_decimal(binary):
         i -= 1
     return decimal
 
+def check_offset_field(num):
+    if num < -32768 or num > 32767:
+        raise Exception(f'error {num} offset overflow')
+    return True
+
+def check_isregister(num):
+    if num < 0 or num > 7 :
+        raise Exception(f'error {num} not register')
+    return True
