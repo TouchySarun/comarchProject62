@@ -9,13 +9,20 @@ def to_binary_str(number, mask):
 
 
 def binary_str_to_decimal(binary):
-
     decimal = 0
     i = len(binary) - 1
     for bit in binary:
         decimal += int(bit) * (2 ** i)
         i -= 1
     return decimal
+
+
+def extract_binary(num ,start, end):
+    count_bit = (end-start)+1
+    i = 2**(count_bit)-1
+    i <<= start
+    return (num & i) >> start
+
 
 
 def check_offset_field(num):
@@ -28,4 +35,5 @@ def check_isregister(num):
     if num < 0 or num > 7:
         raise Exception(f"error {num} not register")
     return True
+
 
