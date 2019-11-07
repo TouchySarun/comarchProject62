@@ -4,4 +4,7 @@ def halt(code, g):
 
 
 def noop(code, g):
-    pass
+    g["pc"] += 1
+
+    
+
