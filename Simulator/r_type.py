@@ -17,4 +17,3 @@ def add(code, g):
 
     g["reg"][destReg] = g["reg"][regA] + g["reg"][regB]
     g["pc"] += 1
-
