@@ -1,3 +1,16 @@
+import string
+
+avaiable_character = string.ascii_letters + "1234567890"
+
+
+def check_allowed_label(label):
+    illegal_character = []
+    for character in label:
+        if character not in avaiable_character:
+            illegal_character.append(character)
+    return illegal_character
+
+
 def to_binary_str(number, mask):
     binary_str = ""
     while mask > 0:

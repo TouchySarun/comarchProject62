@@ -1,18 +1,31 @@
 from all_instruction import instructions
+from my_utils import check_allowed_label
 
 
 def extracted_label(label, line, line_count):
     if not line.startswith(" "):
-        current_label = line.split(maxsplit=1)[0]
+        line_content = line.split(maxsplit=3)
+        current_label = line_content[0]
 
+        # TODO: check new line
+        illegal_character = check_allowed_label(current_label)
         # check error
-        if current_label[0].isdigit():
+        if illegal_character:
+            raise Exception(f"Label {current_label} can't contain {illegal_character}")
+        elif current_label[0].isdigit():
             raise Exception(f"Label {current_label} can't start with number")
+        elif len(current_label) > 6:
+            raise Exception(f"Label {current_label} can't be more than 6 character")
         elif label.get(current_label):
             raise Exception(f"Duplicate label {current_label}")
 
-            # no error add to label
+        # no error add to label
         label[current_label] = line_count
+
+        # check .fill
+        if len(line_content) >= 3:
+            if line_content[1] == ".fill" and line_content[2] in label:
+                label[current_label] = label[line_content[2]]
 
 
 def handle_instructions(line_count, line):
@@ -73,6 +86,7 @@ if __name__ == "__main__":
                 print(f"Error at line {line_count+1}: {e}")
                 exit(1)
 
+        print(label)
         # go back to beginning of the file
         file_reader.seek(0)
 
@@ -80,7 +94,8 @@ if __name__ == "__main__":
         for line_count, line in enumerate(file_reader):
             try:
                 result = handle_instructions(line_count, line)
-                machine_code = instructions[result[0]]["function"](*result[1])
+                instruction_handler = instructions[result[0]]["function"]
+                machine_code = instruction_handler(*result[1])
                 print(machine_code)
                 output.append(machine_code)
             except Exception as e:
@@ -90,5 +105,5 @@ if __name__ == "__main__":
     # write reesult to a file
     with open(f"{file_output}", "w") as file_writer:
         for machine_code in output:
-            file_writer.write(str(machine_code)+"\n")
+            file_writer.write(str(machine_code) + "\n")
 
