@@ -11,5 +11,4 @@ def halt():
 
 # .fill
 def fill(input):
-    if check_offset_field(input):
-        return input
+    return input

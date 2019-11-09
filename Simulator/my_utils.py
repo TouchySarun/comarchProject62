@@ -6,8 +6,12 @@ def extract_binary(num, start, end, unsiged=True):
     if unsiged:
         return extracted_bit
 
-    signed_bit = ((1 << (count_bit - 1)) & extracted_bit) >> (count_bit - 1)
-    if not signed_bit:
-        return extracted_bit
+    if (1 << (count_bit - 1)) & extracted_bit:
+        return extracted_bit - (1 << count_bit)  # กลับบิท + 1
 
-    return extracted_bit - (1 << count_bit)  # กลับบิท + 1
+    return extracted_bit
+
+
+def get_sign_bit(num, count_bit):
+    signed_bit = ((1 << (count_bit - 1)) & num) >> (count_bit - 1)
+    return signed_bit

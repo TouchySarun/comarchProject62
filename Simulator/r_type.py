@@ -6,7 +6,7 @@ def nand(code, g):
     regA = extract_binary(code, 19, 21)
     regB = extract_binary(code, 16, 18)
 
-    g["mem"][destReg] = ~(g["mem"][regA] & g["mem"][regB])
+    g["reg"][destReg] = ~(g["reg"][regA] & g["reg"][regB])
     g["pc"] += 1
 
 

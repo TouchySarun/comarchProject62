@@ -1,10 +1,11 @@
 from my_utils import extract_binary
 from all_instruction import instructions_opcode
+from register_value import RegisterValue
 
 GLOBAL_VALUE = {
     "pc": 0,
     "ic": 0,
-    "reg": [0, 0, 0, 0, 0, 0, 0, 0],
+    "reg": RegisterValue(),
     "mem": [],
     "halt": False,
 }
@@ -15,8 +16,8 @@ def print_state(g):
     print("state")
     print(f"\t pc = {g['pc']}")
     print(f"\t memory:")
-    for i, mem in enumerate(g["mem"]):
-        print(f"\t\tmem[{i}]:{mem}")
+    # for i, mem in enumerate(g["mem"]):
+    #     print(f"\t\tmem[{i}]:{mem}")
     print(f"\t regiters:")
     for i, reg in enumerate(g["reg"]):
         print(f"\t\treg[{i}]:{reg}")
@@ -47,4 +48,5 @@ if __name__ == "__main__":
             print("final state of machine:")
 
         print_state(GLOBAL_VALUE)
+        # input("Press Enter to continue...")
 
