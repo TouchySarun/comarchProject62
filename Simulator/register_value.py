@@ -13,10 +13,12 @@ class RegisterValue:
         self.register = [0, 0, 0, 0, 0, 0, 0, 0]
 
     def __setitem__(self, index, value):
-        self.register[index] = clamp_value(value)
+        if index != 0:
+            self.register[index] = clamp_value(value)
+        # r0 เป็น 0 เสมอไม่เปลี่ยนค่า
 
     def __getitem__(self, index):
-        return clamp_value(self.register[index])
+        return self.register[index]
 
     def __repr__(self):
         return str(self.register)
