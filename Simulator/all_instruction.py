@@ -4,12 +4,12 @@ from j_type import jalr
 from o_type import halt, noop
 
 instructions_opcode = {
-    0: {"function": add},
-    1: {"function": nand},
-    2: {"function": lw},
-    3: {"function": sw},
-    4: {"function": beq},
-    5: {"function": jalr},
-    6: {"function": halt},
-    7: {"function": noop},
+    0: {"function": add, "name": "add"},
+    1: {"function": nand, "name": "nand"},
+    2: {"function": lw, "name": "lw"},
+    3: {"function": sw, "name": "sw"},
+    4: {"function": beq, "name": "beq"},
+    5: {"function": jalr, "name": "jalr"},
+    6: {"function": halt, "name": "halt"},
+    7: {"function": noop, "name": "noop"},
 }
