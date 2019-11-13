@@ -16,8 +16,8 @@ def print_state(g):
     print("state")
     print(f"\t pc = {g['pc']}")
     print(f"\t memory:")
-    # for i, mem in enumerate(g["mem"]):
-    #     print(f"\t\tmem[{i}]:{mem}")
+    for i, mem in enumerate(g["mem"]):
+        print(f"\t\tmem[{i}]:{mem}")
     print(f"\t regiters:")
     for i, reg in enumerate(g["reg"]):
         print(f"\t\treg[{i}]:{reg}")
