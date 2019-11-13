@@ -5,7 +5,7 @@ def extract_binary(num, start, end, unsiged=True):
     extracted_bit = (num & i) >> start
     if unsiged:
         return extracted_bit
-
+    # check sign bit
     if (1 << (count_bit - 1)) & extracted_bit:
         return extracted_bit - (1 << count_bit)  # กลับบิท + 1
 

@@ -39,9 +39,9 @@ if __name__ == "__main__":
         code = GLOBAL_VALUE["mem"][pc]
         opcode = extract_binary(code, 22, 24)
         # call function according to opcode
-        instructions_opcode[opcode]["function"](code, GLOBAL_VALUE)
+        instruction_handler = instructions_opcode[opcode]["function"]
+        instruction_handler(code, GLOBAL_VALUE)
         GLOBAL_VALUE["ic"] += 1
-
         if GLOBAL_VALUE["halt"]:
             print("machine halted")
             print(f"total of {GLOBAL_VALUE['ic']} instructions executed")
