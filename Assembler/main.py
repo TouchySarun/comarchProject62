@@ -2,53 +2,60 @@ from all_instruction import instructions
 from my_utils import check_allowed_label
 
 
-def extracted_label(label, line, line_count):
-    if not line.startswith(" "):
-        line_content = line.split(maxsplit=3)
-        current_label = line_content[0]
+def extracted_label(label, line, line_count, line_content):
 
-        # TODO: check new line
-        illegal_character = check_allowed_label(current_label)
-        # check error
-        if illegal_character:
-            raise Exception(f"Label {current_label} can't contain {illegal_character}")
-        elif current_label[0].isdigit():
-            raise Exception(f"Label {current_label} can't start with number")
-        elif len(current_label) > 6:
-            raise Exception(f"Label {current_label} can't be more than 6 character")
-        elif label.get(current_label):
-            raise Exception(f"Duplicate label {current_label}")
+    current_label = line_content[0]
 
-        # no error add to label
-        label[current_label] = line_count
+    illegal_character = check_allowed_label(current_label)
+    # check error
+    if illegal_character:
+        raise Exception(f"Label {current_label} can't contain {illegal_character}")
+    elif current_label[0].isdigit():
+        raise Exception(f"Label {current_label} can't start with number")
+    elif len(current_label) > 6:
+        raise Exception(f"Label {current_label} can't be more than 6 character")
+    elif label.get(current_label):
+        raise Exception(f"Duplicate label {current_label}")
 
-        # check .fill
-        if len(line_content) >= 3:
-            if line_content[1] == ".fill" and line_content[2] in label:
-                label[current_label] = label[line_content[2]]
+    # check .fill
+    if len(line_content) >= 3:
+        if line_content[1] == ".fill" and line_content[2] in label:
+            label[current_label] = (line_count, line_content[2])
+            return
+
+    label[current_label] = (line_count, None)
 
 
-def handle_instructions(line_count, line):
-    # convert instuction to machine code
-    split_line = line.split()
-    if not line.startswith(" "):
-        split_line.pop(0)  # ignore label
+def handle_instructions(line_count, line_content, label):
 
-    instruction = split_line.pop(0).lower()
+    instruction = line_content.pop(0).lower()
     if instruction in instructions.keys():
         fields = []
         for _ in range(instructions[instruction]["input"]):
-            field = split_line.pop(0)
+
+            # handle not enough field for instruction
+            try:
+                field = line_content.pop(0)
+            except IndexError:
+                raise Exception(f"Not enough field for {instruction}")
+
             # handle if field is label
-            if label.get(field):
+            label_value = label.get(field)
+            if label_value:
                 if instruction == "beq":
                     # calculate offset
-                    destination = label.get(field)
+
+                    if label_value[1] is not None:
+                        destination = label[label_value[1]][0]
+                    else:
+                        destination = label_value[0]
+
                     offset = destination - (line_count + 1)
                     field = offset
                 else:
                     # field is an address of label
-                    field = label.get(field)
+                    field = label_value[0]
+
             elif isinstance(field, float):
                 raise Exception(f"{field} need to be a whole number")
 
@@ -79,9 +86,17 @@ if __name__ == "__main__":
 
         # find all label
         label = {}
+        address_line = 0
         for line_count, line in enumerate(file_reader):
             try:
-                extracted_label(label, line, line_count)
+                line_content = line.split(maxsplit=3)[:3]
+                # ignore blank line
+                if len(line_content) > 0:
+
+                    if not line.startswith(" "):
+                        extracted_label(label, line, address_line, line_content)
+                    address_line += 1
+
             except Exception as e:
                 print(f"Error at line {line_count+1}: {e}")
                 exit(1)
@@ -91,13 +106,25 @@ if __name__ == "__main__":
         file_reader.seek(0)
 
         # read each line and handle instruction
+        address_line = 0
         for line_count, line in enumerate(file_reader):
             try:
-                result = handle_instructions(line_count, line)
-                instruction_handler = instructions[result[0]]["function"]
-                machine_code = instruction_handler(*result[1])
-                print(machine_code)
-                output.append(machine_code)
+                # convert instuction to machine code
+                line_content = line.split()
+                if len(line_content) > 0:
+
+                    if line_content[0] not in instructions.keys():
+                        line_content.pop(0)  # ignore label
+
+                    instruction, fields = handle_instructions(
+                        address_line, line_content, label
+                    )
+                    instruction_handler = instructions[instruction]["function"]
+                    machine_code = instruction_handler(*fields)
+                    print(machine_code)
+                    output.append(machine_code)
+                    address_line += 1
+
             except Exception as e:
                 print(f"Error at line {line_count+1}: {e}")
                 exit(1)
