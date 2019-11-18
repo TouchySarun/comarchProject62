@@ -17,13 +17,7 @@ def extracted_label(label, line, line_count, line_content):
     elif label.get(current_label):
         raise Exception(f"Duplicate label {current_label}")
 
-    # check .fill
-    if len(line_content) >= 3:
-        if line_content[1] == ".fill" and line_content[2] in label:
-            label[current_label] = (line_count, line_content[2])
-            return
-
-    label[current_label] = (line_count, None)
+    label[current_label] = line_count
 
 
 def handle_instructions(line_count, line_content, label):
@@ -44,17 +38,12 @@ def handle_instructions(line_count, line_content, label):
             if label_value:
                 if instruction == "beq":
                     # calculate offset
-
-                    if label_value[1] is not None:
-                        destination = label[label_value[1]][0]
-                    else:
-                        destination = label_value[0]
-
-                    offset = destination - (line_count + 1)
+                    destination = label_value
+                    offset = label_value - (line_count + 1)
                     field = offset
                 else:
                     # field is an address of label
-                    field = label_value[0]
+                    field = label_value
 
             elif isinstance(field, float):
                 raise Exception(f"{field} need to be a whole number")

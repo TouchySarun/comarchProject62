@@ -1,10 +1,8 @@
-def halt(code, g):
-    g["pc"] += 1
-    g["halt"] = True
+def halt(code, computer):
+    computer.pc += 1
+    computer.halt = True
 
 
-def noop(code, g):
-    g["pc"] += 1
-
-    
+def noop(code, computer):
+    computer.pc += 1
 

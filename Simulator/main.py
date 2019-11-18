@@ -1,52 +1,71 @@
-from my_utils import extract_binary
+from my_utils import extract_binary, clamp_value
 from all_instruction import instructions_opcode
 from register_value import RegisterValue
 
-GLOBAL_VALUE = {
-    "pc": 0,
-    "ic": 0,
-    "reg": RegisterValue(),
-    "mem": [],
-    "halt": False,
-}
 
+class ComputerValue:
+    def __init__(self):
+        self._reg = [0, 0, 0, 0, 0, 0, 0, 0]
+        self._mem = {}
+        self.pc = 0
+        self.ic = 0
+        self.halt = False
 
-def print_state(g):
-    print("@@@")
-    print("state")
-    print(f"\t pc = {g['pc']}")
-    print(f"\t memory:")
-    for i, mem in enumerate(g["mem"]):
-        print(f"\t\tmem[{i}]:{mem}")
-    print(f"\t regiters:")
-    for i, reg in enumerate(g["reg"]):
-        print(f"\t\treg[{i}]:{reg}")
-    print("end state\n")
+    # Access register
+    def set_register(self, index, value):
+        if index != 0:
+            self._reg[index] = clamp_value(value)
+
+    def get_register(self, index):
+        return self._reg[index]
+
+    # Accress memory
+    def set_memory(self, index, value):
+        self._mem[index] = clamp_value(value)
+
+    def get_memory(self, index):
+        return self._mem.get(index, 0)
+
+    def print_state(self):
+        print("@@@")
+        print("state")
+        print(f"\t pc = {self.pc}")
+        print(f"\t memory:")
+        for i, mem in self._mem.items():
+            print(f"\t\tmem[{i}]:{mem}")
+        print(f"\t regiters:")
+        for i, reg in enumerate(self._reg):
+            print(f"\t\treg[{i}]:{reg}")
+        print("end state\n")
 
 
 if __name__ == "__main__":
     machine_code_file = input("Machine code file: ")
 
+    computer = ComputerValue()
+
     with open(machine_code_file, "r") as file_reader:
         # read input machine code
         for line_count, line in enumerate(file_reader):
-            GLOBAL_VALUE["mem"].append(int(line))
-            print(f"mem[{line_count}]={GLOBAL_VALUE['mem'][line_count]}")
+            computer.set_memory(line_count, int(line))
+            print(f"mem[{line_count}]={computer.get_memory(line_count)}")
 
-    while not GLOBAL_VALUE["halt"]:
+    while not computer.halt:
 
-        pc = GLOBAL_VALUE["pc"]
-        code = GLOBAL_VALUE["mem"][pc]
+        pc = computer.pc
+        code = computer.get_memory(pc)
         opcode = extract_binary(code, 22, 24)
+
         # call function according to opcode
         instruction_handler = instructions_opcode[opcode]["function"]
-        instruction_handler(code, GLOBAL_VALUE)
-        GLOBAL_VALUE["ic"] += 1
-        if GLOBAL_VALUE["halt"]:
+        instruction_handler(code, computer)
+        computer.ic += 1
+
+        if computer.halt:
             print("machine halted")
-            print(f"total of {GLOBAL_VALUE['ic']} instructions executed")
+            print(f"total of {computer.ic} instructions executed")
             print("final state of machine:")
 
-        print_state(GLOBAL_VALUE)
+        computer.print_state()
         # input("Press Enter to continue...")
 
