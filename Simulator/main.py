@@ -13,17 +13,26 @@ class ComputerValue:
 
     # Access register
     def set_register(self, index, value):
+        if index < 0 or index > 7:
+            raise Exception(f"Can't Access register {index}")
         if index != 0:
             self._reg[index] = clamp_value(value)
 
+
     def get_register(self, index):
+        if index < 0 or index > 7:
+            raise Exception(f"Can't Access register {index}")
         return self._reg[index]
 
     # Accress memory
     def set_memory(self, index, value):
+        if index < 0:
+            raise Exception(f"Can't Access memory {index}")
         self._mem[index] = clamp_value(value)
 
     def get_memory(self, index):
+        if index < 0:
+            raise Exception(f"Can't Access memory {index}")
         return self._mem.get(index, 0)
 
     def print_state(self):
@@ -48,18 +57,25 @@ if __name__ == "__main__":
         # read input machine code
         for line_count, line in enumerate(file_reader):
             computer.set_memory(line_count, int(line))
-            print(f"mem[{line_count}]={computer.get_memory(line_count)}")
+
+    computer.print_state()
 
     while not computer.halt:
+        try:
+            pc = computer.pc
+            code = computer.get_memory(pc)
+            opcode = extract_binary(code, 22, 24)
 
-        pc = computer.pc
-        code = computer.get_memory(pc)
-        opcode = extract_binary(code, 22, 24)
+            # call function according to opcode
+            instruction_handler = instructions_opcode[opcode]["function"]
+            instruction_handler(code, computer)
 
-        # call function according to opcode
-        instruction_handler = instructions_opcode[opcode]["function"]
-        instruction_handler(code, computer)
-        computer.ic += 1
+            computer.ic += 1
+
+        except Exception as e:
+            print(f"Error {e}")
+            exit(1)
+
 
         if computer.halt:
             print("machine halted")
