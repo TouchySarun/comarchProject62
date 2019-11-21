@@ -1,8 +1,8 @@
 def halt(code, computer):
-    computer.pc += 1
+    computer.go_next_pc()
     computer.halt = True
 
 
 def noop(code, computer):
-    computer.pc += 1
+    computer.go_next_pc()
 

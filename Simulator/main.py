@@ -1,15 +1,15 @@
 from my_utils import extract_binary, clamp_value
 from all_instruction import instructions_opcode
-from register_value import RegisterValue
 
 
 class ComputerValue:
     def __init__(self):
         self._reg = [0, 0, 0, 0, 0, 0, 0, 0]
         self._mem = {}
-        self.pc = 0
+        self._pc = 0
         self.ic = 0
         self.halt = False
+        self.numMemory = 0
 
     # Access register
     def set_register(self, index, value):
@@ -35,17 +35,51 @@ class ComputerValue:
             raise Exception(f"Can't Access memory {index}")
         return self._mem.get(index, 0)
 
+    def read_instruction_input(self, file_input):
+        instruction_mem = 0
+        with open(file_input, "r") as file_reader:
+            # read input machine code
+            for line_count, line in enumerate(file_reader):
+                self.set_memory(line_count, int(line))
+                instruction_mem += 1
+        
+        computer.numMemory = instruction_mem
+    
+    # pc managing
+    def set_pc(self, new_pc):
+        if new_pc >= self.numMemory:
+            raise Exception(f"PC can't go to {new_pc}")
+        self._pc = new_pc
+    
+    def get_pc(self):
+        return self._pc
+    
+    def go_next_pc(self):
+        self.set_pc(self._pc + 1)
+
     def print_state(self):
-        print("@@@")
-        print("state")
-        print(f"\t pc = {self.pc}")
-        print(f"\t memory:")
+        print("\n@@@")
+        print("state:")
+        print(f"\tpc {self._pc}")
+        print(f"\tmemory:")
         for i, mem in self._mem.items():
-            print(f"\t\tmem[{i}]:{mem}")
-        print(f"\t regiters:")
+            print(f"\t\tmem[ {i} ] {mem}")
+        print(f"\tregiters:")
         for i, reg in enumerate(self._reg):
-            print(f"\t\treg[{i}]:{reg}")
-        print("end state\n")
+            print(f"\t\treg[ {i} ] {reg}")
+        print("end state")
+
+        # printf("\n@@@\nstate:\n");
+        # printf("\tpc %d\n", statePtr->pc);
+        # printf("\tmemory:\n");
+        # for (i=0; i<statePtr->numMemory; i++) {
+        #     printf("\t\tmem[ %d ] %d\n", i, statePtr->mem[i]);
+        # }
+        # printf("\tregisters:\n");
+        # for (i=0; i<NUMREGS; i++) {
+        #     printf("\t\treg[ %d ] %d\n", i, statePtr->reg[i]);
+        # }
+        # printf("end state\n");
 
 
 if __name__ == "__main__":
@@ -53,16 +87,13 @@ if __name__ == "__main__":
 
     computer = ComputerValue()
 
-    with open(machine_code_file, "r") as file_reader:
-        # read input machine code
-        for line_count, line in enumerate(file_reader):
-            computer.set_memory(line_count, int(line))
+    computer.read_instruction_input(machine_code_file)
 
     computer.print_state()
 
     while not computer.halt:
         try:
-            pc = computer.pc
+            pc = computer.get_pc()
             code = computer.get_memory(pc)
             opcode = extract_binary(code, 22, 24)
 

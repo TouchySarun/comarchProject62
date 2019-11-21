@@ -8,7 +8,7 @@ def nand(code, computer):
 
     value = ~(computer.get_register(regA) & computer.get_register(regB))
     computer.set_register(destReg, value)
-    computer.pc += 1
+    computer.go_next_pc()
 
 
 def add(code, computer):
@@ -18,5 +18,5 @@ def add(code, computer):
 
     value = computer.get_register(regA) + computer.get_register(regB)
     computer.set_register(destReg, value)
-    computer.pc += 1
+    computer.go_next_pc()
 

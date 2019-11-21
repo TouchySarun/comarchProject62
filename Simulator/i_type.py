@@ -9,7 +9,7 @@ def lw(code, computer):
     address = computer.get_register(regA) + offsetField
     mem_value = computer.get_memory(address)
     computer.set_register(regB, mem_value)
-    computer.pc += 1
+    computer.go_next_pc()
 
 
 def sw(code, computer):
@@ -20,7 +20,7 @@ def sw(code, computer):
     address = computer.get_register(regA) + offsetField
     regB_value = computer.get_register(regB)
     computer.set_memory(address, regB_value)
-    computer.pc += 1
+    computer.go_next_pc()
 
 
 def beq(code, computer):
@@ -32,7 +32,7 @@ def beq(code, computer):
     regB_value = computer.get_register(regB)
 
     if regA_value == regB_value:
-        computer.pc += 1 + offsetField
+        computer.set_pc(computer.get_pc() + 1 + offsetField)
     else:
-        computer.pc += 1
+        computer.go_next_pc()
 
