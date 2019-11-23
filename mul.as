@@ -1,7 +1,7 @@
- lw 0 1 mcand
- lw 0 2 mplier
- lw 0 4 one
- lw 0 7 count
+    lw 0 1 mcand
+    lw 0 2 mplier
+    lw 0 4 one
+    lw 0 7 count
 loop nand 2 4 6
     nand 6 6 6
     beq 4 7 exit
